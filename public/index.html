@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Run requests through a simulated AI gateway: auth, rate limits, guardrails, cost-tier routing, cache, budget, and a trace per request.">
+  <title>AI Gateway Lab — the control layer between demo and production</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+<!-- pb-shell --><link rel="stylesheet" href="./pb-shell.css"><!-- pb-shell --><!-- pb-back --><link rel="stylesheet" href="./pb-back.css"><!-- pb-back --></head>
+<body>
+<main>
+  <nav aria-label="Primary"><span class="brand">AI Gateway Lab</span><a aria-current="page" href="/">Lab</a><a href="/guide.html">Guide</a><a href="https://github.com/anhquanbd2021/ai-production-infrastructure">Source</a></nav>
+  <header class="hero">
+    <div><p class="eyebrow">AI Gateway Lab · 10 nodes · 1 model call</p><h1>What stands between a demo and production?</h1><p class="lede">Send a request through the gateway: authenticate, rate-limit, input guardrail, cost-tier routing, cache, budget, model, output guardrail, answer, trace. Burst a key to trip its rate limit; repeat a request to watch the cache drop the cost to $0.00.</p></div>
+    <p class="warning"><strong>Safe educational demo.</strong> No real model is called — tokens, cost, and latency are deterministic formulas. The pipeline shape is the lesson.</p>
+  </header>
+
+  <section class="workspace" aria-label="Gateway lab">
+    <section class="panel controls" aria-labelledby="controls-title">
+      <div><p class="eyebrow">Controls</p><h2 id="controls-title">Send a request</h2></div>
+      <label for="key">API key<select id="key"></select></label>
+      <label for="scenario">Scenario<select id="scenario"></select></label>
+      <label for="task">Task<select id="task"></select></label>
+      <label for="prompt">Prompt<textarea id="prompt" rows="4"></textarea></label>
+      <label class="check"><input type="checkbox" id="standard-down"> mark the standard tier unavailable <span class="muted">(fallback demo)</span></label>
+      <button id="run" type="button">Run through the gateway</button>
+      <button id="burst" type="button" class="secondary">Burst ×5 — trip the rate limit</button>
+      <button id="reset" type="button" class="secondary">Reset gateway state</button>
+      <p class="muted">Deterministic: the same request always produces the same trace, cost, and latency.</p>
+    </section>
+
+    <section class="panel visualizer" aria-labelledby="trace-title">
+      <div class="section-heading"><div><p class="eyebrow">Trace</p><h2 id="trace-title">The 10-node gateway path</h2></div><span id="verdict" class="badge" role="status" aria-live="polite">Ready</span></div>
+      <ol id="trace" class="trace" aria-label="Gateway trace"></ol>
+      <div class="cards" aria-label="Request metrics">
+        <div class="card"><span class="card-label">Model</span><span id="m-model" class="card-value">—</span></div>
+        <div class="card"><span class="card-label">Cost</span><span id="m-cost" class="card-value">—</span></div>
+        <div class="card"><span class="card-label">Latency</span><span id="m-latency" class="card-value">—</span></div>
+        <div class="card"><span class="card-label">Tokens in/out</span><span id="m-tokens" class="card-value">—</span></div>
+      </div>
+      <article class="answer"><p id="answer-text">—</p></article>
+    </section>
+  </section>
+
+  <section class="workspace" aria-label="Ledger and request log">
+    <section class="panel" aria-labelledby="ledger-title">
+      <div class="section-heading"><div><p class="eyebrow">Economics</p><h2 id="ledger-title">Per-key ledger</h2></div><span id="cache-size" class="badge">cache 0</span></div>
+      <table class="ledger" id="ledger">
+        <thead><tr><th>Key</th><th>Spent</th><th>Cap</th><th>Rate used</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="muted">Spend only accrues on real model calls — cache hits are free, and denied requests cost nothing. That is the point of putting the meter here.</p>
+    </section>
+    <section class="panel" aria-labelledby="log-title">
+      <div class="section-heading"><div><p class="eyebrow">Observability</p><h2 id="log-title">Request log</h2></div><span id="log-count" class="badge">0 records</span></div>
+      <table class="ledger" id="log">
+        <thead><tr><th>Req</th><th>Verdict</th><th>Model</th><th>Cache</th><th>Cost</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="muted">Every request leaves a trace record — including the denied ones. "The gateway said no" only counts if you can replay it.</p>
+    </section>
+  </section>
+
+  <p class="foot"><a href="/guide.html">Read the guide</a> · <a href="https://github.com/anhquanbd2021/ai-production-infrastructure">Inspect source and tests</a></p>
+</main>
+<script type="module" src="/app.js"></script>
+<!-- pb-shell --><a class="pb-shell" href="https://github.com/anhquanbd2021/ai-production-infrastructure" title="ai-production-infrastructure — an Article Playbook demo (view source)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="#2dd4bf"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="#2dd4bf"/></svg><b>ai-production-infrastructure</b><i>DEMO</i></a><!-- pb-shell --><!-- pb-back --><a class="pb-back" id="pb-back" href="https://github.com/anhquanbd2021/ai-production-infrastructure" title="Back to the article — ai-production-infrastructure">← Article <i>PLAYBOOK</i></a><script>(function(){var a=document.getElementById('pb-back');if(!a)return;var h=location.hostname;if(/^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(h)){a.href='//'+h+':'+(/^(localhost|127\.0\.0\.1)$/.test(h)?'1234':'30082')+'/microsites/article.html?slug=ai-production-infrastructure';}})();</script><!-- pb-back --></body>
+</html>

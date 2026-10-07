@@ -1,0 +1,23 @@
+[
+  {
+    "id": "gw-demo-frontend",
+    "label": "gw-demo-frontend · chat UI traffic",
+    "windowMs": 60000,
+    "rateLimit": 4,
+    "dailyCapUsd": 2.5
+  },
+  {
+    "id": "gw-demo-batch",
+    "label": "gw-demo-batch · nightly batch jobs",
+    "windowMs": 60000,
+    "rateLimit": 8,
+    "dailyCapUsd": 10
+  },
+  {
+    "id": "gw-demo-sandbox",
+    "label": "gw-demo-sandbox · intern experiments",
+    "windowMs": 60000,
+    "rateLimit": 3,
+    "dailyCapUsd": 0.1
+  }
+]

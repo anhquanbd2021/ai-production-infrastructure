@@ -1,0 +1,16 @@
+{
+  "name": "ai-production-infrastructure-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Gateway Lab — run requests through a simulated AI gateway: auth, rate limits, guardrails, cost-tier routing, cache, budget, and a trace per request.",
+  "scripts": {
+    "start": "node app/server.js",
+    "scan": "node scripts/report.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "npm test && npm run scan"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

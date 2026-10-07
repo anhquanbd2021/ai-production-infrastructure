@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How the AI Gateway Lab maps to the article's claims.">
+  <title>Guide — AI Gateway Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+<!-- pb-shell --><link rel="stylesheet" href="./pb-shell.css"><!-- pb-shell --><!-- pb-back --><link rel="stylesheet" href="./pb-back.css"><!-- pb-back --></head>
+<body>
+<main>
+  <nav aria-label="Primary"><span class="brand">AI Gateway Lab</span><a href="/">Lab</a><a aria-current="page" href="/guide.html">Guide</a><a href="https://github.com/anhquanbd2021/ai-production-infrastructure">Source</a></nav>
+  <h1>Guide: what each part proves</h1>
+
+  <section class="panel">
+    <h2>The 10-node gateway path</h2>
+    <p>Every request walks the same trace: authenticate, rate limit, input guardrail, route, cache, budget, model, output guardrail, answer, log. One node is italicized — it is the only one that "calls" a model. The other nine are the control layer the article is about.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Cost-tier routing</h2>
+    <p>The router picks the cheapest tier that can handle the task: classify and extract go to <strong>nano</strong>, summarize to <strong>standard</strong>, reason to <strong>pro</strong>. Paste a prompt over 600 characters and watch the tier bump — input length is a routing signal, not just an invoice line. Check "standard tier down" and a summarize request falls back to pro, flagged in the trace. The caller never had to know.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Inference economics</h2>
+    <p>Every metered call reports tokens in/out and a dollar cost from the tier's per-1K prices. Run "Classify a support ticket" then "Same ticket, again": the repeat is a <strong>cache hit — $0.00, 6ms</strong>. Switch to the sandbox key and ask it to reason: the projected cost exceeds its $0.10 cap, so the budget node denies the request <em>before</em> a cent is spent.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Guardrails on both sides</h2>
+    <p>The injection scenario is denied at the input guardrail — no model call, no spend. The API-key probe is more interesting: the prompt matches no input rule, but the simulated model still leaks a fixture credential, and the <strong>output</strong> guardrail redacts it. Input filters alone are not enough.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Observability</h2>
+    <p>The request log records every call — denied, rate-limited, over-budget, cached, or answered — with the model, cost, and verdict. Burst ×5 with the sandbox key (limit 3/minute) and watch the fourth and fifth requests get denied while still leaving trace records.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Honest limits</h2>
+    <p>No real model is called; token counts, prices, and latency are formulas. The rate limiter is a fixed window, caching is exact-match, and the routing table is static. The lab proves where the controls sit and what they buy — it is not a production gateway.</p>
+  </section>
+
+  <p class="foot"><a href="/">Back to the lab</a></p>
+</main>
+<!-- pb-shell --><a class="pb-shell" href="https://github.com/anhquanbd2021/ai-production-infrastructure" title="ai-production-infrastructure — an Article Playbook demo (view source)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="#2dd4bf"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="#2dd4bf"/></svg><b>ai-production-infrastructure</b><i>DEMO</i></a><!-- pb-shell --><!-- pb-back --><a class="pb-back" id="pb-back" href="https://github.com/anhquanbd2021/ai-production-infrastructure" title="Back to the article — ai-production-infrastructure">← Article <i>PLAYBOOK</i></a><script>(function(){var a=document.getElementById('pb-back');if(!a)return;var h=location.hostname;if(/^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(h)){a.href='//'+h+':'+(/^(localhost|127\.0\.0\.1)$/.test(h)?'1234':'30082')+'/microsites/article.html?slug=ai-production-infrastructure';}})();</script><!-- pb-back --></body>
+</html>

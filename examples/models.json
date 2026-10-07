@@ -1,0 +1,32 @@
+[
+  {
+    "id": "nano-1",
+    "tier": "nano",
+    "label": "nano-1 · cheap classifier tier",
+    "priceInPer1k": 0.05,
+    "priceOutPer1k": 0.15,
+    "baseLatencyMs": 40,
+    "msPerOutputToken": 1,
+    "available": true
+  },
+  {
+    "id": "standard-1",
+    "tier": "standard",
+    "label": "standard-1 · general workhorse",
+    "priceInPer1k": 0.5,
+    "priceOutPer1k": 1.5,
+    "baseLatencyMs": 120,
+    "msPerOutputToken": 2,
+    "available": true
+  },
+  {
+    "id": "pro-1",
+    "tier": "pro",
+    "label": "pro-1 · frontier reasoning",
+    "priceInPer1k": 5,
+    "priceOutPer1k": 15,
+    "baseLatencyMs": 400,
+    "msPerOutputToken": 4,
+    "available": true
+  }
+]
